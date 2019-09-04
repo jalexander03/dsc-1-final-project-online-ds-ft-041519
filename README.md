@@ -1,151 +1,532 @@
 
-# Module 1 Final Project
+# Module 1 Project - Jumpstart Realty
+
+* Student name: **Alex Husted**
+* Student pace: **Online Full Time**
+* Scheduled project review date/time: **Tuesday May 21, 2019 2:00 EST**
+* Instructor name: **Rafael Carrasco**
+* Blog post URL: **Work in Progress**
+
+# Project Outline
+
+This notebook represents the final project in Module 1 of Flatiron's Data Science Bootcamp. The Module began with in-depth introductions of the Python language with significant lessons on loops and funtions. Then the Module moved to noteworthy Python libraries and the usefulness of libraries such as Pandas, Numpy, Seaborn, and Matplotlib. Next, Object Oriented Programming (OOP) with classes and instances was presented. Module 1 concluded with the practical employment of statistical distributions to create regression models.
+
+In this project, I will be working with the 'King County House Sales' dataset with the purpose of predicting the future sale price of houses in King County as accurately as possible. I will clean, explore, and model this dataset with a multivariate linear regression to accomplish this purpose. To best illustrate the results of the model, it will be presented from a viewpoint of a hypothetical local startup business, called 'Jumpstart Realty'. Jumpstart Realty looks to offer future buyers with high-caliber information to build trust between buyers and realtors. This project will follow a certain methodology, named OSEMiN, to build a best-fit model. OSEMiN suggests to follow certain relational steps to help us understand the data and build our model. These steps are listed below:
+
+* **Project Method (OSEMiN)**
+    * Obtain and load the dataset
+    * Scrub and clean the data
+    * Explore and understand the data value
+    * Model the data through testing processes
+    * Interpret the results and conclude
+
+Before moving on with the project, I would like to provide the business understanding for Jumpstart Realty. Jumpstart managers, along with senior agents and brokers, will use the resulting model to predict the housing market in King County barring drastic changes in the economy. The scope of the project includes housing data within King County, the economic health of buyers in the county, and the value of predictors that contribute to housing sales. The project will begin on Monday May 13th, 2019 and is expected to be completed within a week, on Sunday May, 19th 2019. It's expected that all stateholders involved will conclude with the same understanding of the model and resulting datset. 
+
+# Obtain
+
+The process of loading the dataset is relatively straightforward, but salient nonetheless. Now that the business understanding is solidified, it's time to import the necessary Python libraries and eventually the dataset, which is stored in a .csv file titled 'kc_house_data.csv'.
+
+**Primary Observations:** 
+
+In the first inspection into the dataset, it's important to notice that there are 21,597 data entries and 21 columns seperating those values. 
+
+Beginning using the .head( ) method, there are many predicting variables to work with the intention to predict future sale prices of housing in King County. Some early significant predictors include sqft_living, sqft_lot, waterfront, grade, yr_renovated, and possibly sqft_living15. 
+
+Proceeding with analyzing the datatypes, using the .info( ) method, most of the datatypes are stored within integers and floats. There are a few objects that include date and sqft_basement (which should be stored as an integer). 
+
+Then moving forward with the .describe( ) method, the distribution of the dataset becomes known:
 
 
-## Introduction
+* Outliers in the square footage columns with the max values in some columns over 10,000 ft above the mean. 
 
-In this lesson, we'll review all of the guidelines and specifications for the final project for Module 1.
+* The max value in the 'grade' column is 13, meaning the grading scale includes values over 10. 
 
-## Objectives
-You will be able to:
-* Describe all required aspects of the final project for Module 1
-* Describe all required deliverables
-* Describe what constitutes a successful project
-* Describe what the experience of the project review should be like
+* The average house was build in 1970.
 
-## Final Project Summary
+* There is an average of 2.1 bathrooms per household in the dataset, min value is 0.5 and max is 8.  
 
-You've made it all the way through the first module of this course - take a minute to celebrate your awesomeness! 
+* There is an average of 3.3 bedrooms per household in the dataset, min value is 1 and max is 33. 
 
-![awesome](https://raw.githubusercontent.com/learn-co-curriculum/dsc-1-final-project/master/awesome.gif)
+* The average housing price is 540,000, with a min value of 78,000 and a max of 7,700,000.
 
-All that remains in Module 1 is to put our newfound data science skills to use with a final project! You should expect this project to take between 40 and 50 hours of solid, focused effort. If you're done way quicker, go back and dig in deeper or try some of the optional "level up" suggestions. If you're worried that you're going to get to 30 hrs and still not even have the data imported, reach out to an instructor in Slack ASAP to get some help!
+* Houses seem to be in pretty good condition, with an average condition rating of 3.4 (1-5 scale).
 
-## The Dataset
 
-For this project, you'll be working with the King County House Sales dataset. We've modified the dataset to make it a bit more fun and challenging.  The dataset can be found in the file `"kc_house_data.csv"`, in this repo. 
+# Scrub and Clean
 
-The description of the column names can be found in the column_names.md file in this repository. As with most real-world data sets, the column names are not perfectly described, so you'll have to do some research or use your best judgement if you have questions relating to what the data means.
+During this stage, the data will become processed and ready for exploration. Important steps for this stage include identifying and removing null values, converting datatypes, dealing with outliers, normalizing data, as well as checking for and removing correllated predictors. Data cleaning ensures that the dataset is useable by identifying any errors or corruptions, correcting and manually processing them to prevent errors during the exploration and modeling phases. Let's begin. 
 
-You'll clean, explore, and model this dataset with a multivariate linear regression to predict the sale price of houses as accurately as possible.
+### **Drop Column:** 
+Although the id column is important during data entry, it is not significant when building a model to predict future housing prices, therefore I will drop this from our DataFrame.
 
-## The Deliverables
 
-There will be four deliverables for this project:
+### **Dealing with Null Values:** 
 
-1. A well documented **Jupyter Notebook** containing any code you've written for this project and comments explaining it. This work will need to be pushed to your GitHub repository in order to submit your project.  
-2. A short **Keynote/PowerPoint/Google Slides presentation** (delivered as a PDF export) giving a high-level overview of your methodology and recommendations for non-technical stakeholders. Make sure to also add and commit this pdf of your non-technical presentation to your repository with a file name of presentation.pdf.
-3. A **blog post** (800-1500 words) about one element of the project - it could be the EDA, the feature selection, the choice of visualizations or anything else technical relating to the project. It should be targeted at your peers - aspiring data scientists.
-4. A **Video Walkthrough** of your non-technical presentation. Some common video recording tools used are Zoom, Quicktime, and Nimbus. After you record your presentation, publish it on a service like YouTube or Google Drive, you will need a link to the video to submit your project.
+Dealing with null values is a key factor to build an accurate model for the dataset. To do this, I will first identify if/where null values exist and check how many exist. 
 
-## The Process
+It appears that null values exist for the columns of waterfront, view, and yr_renovated. Considering our dataset contains 21,597 entries, these null values account for almost 20% of the dataset for each column, respectively (except for 'view'). 
 
-### 1. Getting Started
+When inspecting the *waterfront* column, notice there are only 146 instances out of 19,9221 entries, 0.80%, in which properties actually sit on the waterfront. To deal with the null *waterfront* values, we can be confident in replacing these null values with a 'False' entry.
 
-Please start by reviewing this document. If you have any questions, please ask them in Slack ASAP so (a) we can answer the questions and (b) so we can update this repository to make it clearer.
+Now that null values have been replaced in the *waterfront* column, *yr_renovated* must be dealt with. Almost 20% of the dataset in this column is null. It doesn't make sense to remove these columns as much of the data would be replaced. A better option would be to change values that have '0' to reflect the intial construction date (i.e. if a house was never renovated but was built in 1950, then the renovation date would reflect 1950). 
 
-Be sure to let the instructor team know when you’ve started working on a project, either by reaching out over Slack or, if you are in a full-time or part-time cohort, by connecting with your Cohort Lead in your weekly 1:1. If you’re not sure who to reach out to, post in the #online-ds-sp-000 channel in Slack.
+Both *waterfront* and *yr_built* null values have been dealt with and the final null value to deal with is the *view* column. The null values here are a relatively low percentage of the dataset. There are two options - to drop the rows altogether or replace the values with a common occurring value in the column. Looking at the distribution of the dataset, it seems that over 75% of the data within the column retains a '0' value. I am confident in replacing the null values with 0.
 
-Once you're done with the first 12 sections, please start on the project. Do that by forking this repository, cloning it locally, and working in the student.ipynb file. Make sure to also add and commit a pdf of your presentation to the repository with a file name of `presentation.pdf`.
+*There is one exception to this dataset where null values must be ADDED. In the predictor *sqft_basement*, *basements that do not exist have a square footage of zero. This is problematic further down the line when analyzing linear regression graphs. To resolve this problem, '0.0's in the *sqft_basement* column will be replaced with zeros.* This will occur in the next section:
 
-### 2. The Project Review
-#### What to expect from the Project Review
+Amazing, all null values have been dealt with, except for the proper addition of null values in the *sqft_basement* predictor. Time to progess onward with our data cleaning process by converting datatypes into the proper form. 
 
-Project reviews are focused on preparing you for technical interviews. Treat project reviews as if they were technical interviews, in both attitude and technical presentation *(sometimes technical interviews will feel arbitrary or unfair - if you want to get the job, commenting on that is seldom a good choice)*.
+### **Converting Datatypes:** 
+As the dataset becomes clearer and datatypes are identified, there are a few instances of datatypes stored as integers that need to be converted into objects, as well as objects into strings. In looking at our .info( ) method, it's clear that *waterfront* should be stored as a categorical string datatype. There's also a case in which an object should be converted into a string, which occurs in the sqft_basement column. 
 
-The project review is comprised of a 45 minute 1:1 session with one of the instructors. During your project review, be prepared to:
+For the liking of this dataset, all values have been converted into their proper form. In the converting datatypes section, five predictors were edited to format the dataset for modeling. Now that the null values have been replaced and the datatypes have been converted there are a few techniques to add before beginning the normalizing phase. 
 
-#### 1. Deliver your PDF presentation to a non-technical stakeholder. 
-In this phase of the review (~10 mins) your instructor will play the part of a non-technical stakeholder that you are presenting your findings to. The presentation should not exceed 5 minutes, giving the "stakeholder" 5 minutes to ask questions.
+### Add Columns
 
-In the first half of the presentation (2-3 mins), you should summarize your methodology in a way that will be comprehensible to someone with no background in data science and that will increase their confidence in you and your findings. In the second half (the remaining 2-3 mins) you should summarize your findings and be ready to answer a couple of non-technical questions from the audience. The questions might relate to technical topics (sampling bias, confidence, etc) but will be asked in a non-technical way and need to be answered in a way that does not assume a background in statistics or machine learning. You can assume a smart, business stakeholder, with a non-quantitative college degree.
+A few columns should be added to solidify the understanding of the King County dataset. Specifically, it would be useful to know if each house included a basement or if the house has ever been renovated. 
 
-#### 2. Go through the Jupyter Notebook, answering questions about how you made certain decisions. Be ready to explain things like:
-    * "how did you pick the question(s) that you did?"
-    * "why are these questions important from a business perspective?"
-    * "how did you decide on the data cleaning options you performed?"
-    * "why did you choose a given method or library?"
-    * "why did you select those visualizations and what did you learn from each of them?"
-    * "why did you pick those features as predictors?"
-    * "how would you interpret the results?"
-    * "how confident are you in the predictive quality of the results?"
-    * "what are some of the things that could cause the results to be wrong?"
+The dataset now seems ready to begin dealing with outliers, normalizing, and removing correllated predictors. With these next steps, we will begin to see a few data visualizations to help understand where the outliers are living and what predictors could be correlated with each other. 
 
-Think of the first phase of the review (~30 mins) as a technical boss reviewing your work and asking questions about it before green-lighting you to present to the business team. You should practice using the appropriate technical vocabulary to explain yourself. Don't be surprised if the instructor jumps around or sometimes cuts you off - there is a lot of ground to cover, so that may happen.
+### Outliers
 
-If any requirements are missing or if significant gaps in understanding are uncovered, be prepared to do one or all of the following:
-* Perform additional data cleanup, visualization, feature selection, modeling and/or model validation
-* Submit an improved version
-* Meet again for another Project Review
+Outliers can represent accurate or inaccurate data. It's important to deal with outliers because they can skew interpretations of data. Outliers are common, especially for large data sets. Nevertheless, in the context of a larger dataset, it's essential to identify deal with outliers to ensure that the interpretation of the King County dataset is as accurate as possible as we move deeper into the OSEMiN process.
 
-What won't happen:
-* You won't be yelled at, belittled, or scolded
-* You won't be put on the spot without support
-* There's nothing you can do to instantly fail or blow it
+![](student_files/student_45_0.png)
 
-## Requirements
 
-This section outlines the rubric we'll use to evaluate your project.
+![](student_files/student_46_0.png)
 
-### 1. Technical Report Must-Haves
 
-For this project, your Jupyter Notebook should meet the following specifications:
+Noticing the data points that lie substantially far away from the box and wisker plot, these are considered the outliers that can skew the data in considerable ways. These outliers can be dealt with by using the z-score formula to rid these specific columns of extreme outliers, in this case, data points that lie 4 standard deviations above the mean. The z-score formula can be shown with:
 
-#### Organization/Code Cleanliness
+![](student_files/student_50_0.png)
 
-* The notebook should be well organized, easy to follow, and code should be commented where appropriate.  
-    * Level Up: The notebook contains well-formatted, professional looking markdown cells explaining any substantial code. All functions have docstrings that act as professional-quality documentation.
-* The notebook is written for a technical audience with a way to both understand your approach and reproduce your results. The target audience for this deliverable is other data scientists looking to validate your findings. 
+The dataset has been reduced by over 500 values to remove outliers that stood 4 deviations from the mean. This nixed values in our SQFT columns that were outlandish and could have skewed our model in the proceeding steps. The above funtion identifies outliers 4 standard deviations from the mean and creates a list of their unique values. The following .drop( ) method removes those values from the King County dataframe. You can tell the difference between the data points in the BLUE box plot. As of now, the data cleaning process is almost finished. The only tasks left in the process are to check for multicollinearity, normalize specific values and possibly execute feature engineering if necessary. 
 
-#### Visualizations & EDA
+### Checking for Multicollinearity
 
-* Your project contains at least 4 meaningful data visualizations, with corresponding interpretations. All visualizations are well labeled with axes labels, a title, and a legend (when appropriate).
-* You pose at least 3 meaningful questions and aswer them through EDA.  These questions should be well labled and easy to identify inside the notebook. 
-    * **Level Up**: Each question is clearly answered with a visualization that makes the answer easy to understand.   
-* Your notebook should contain 1 - 2 paragraphs briefly explaining your approach to this project **through the OSEMN framework**. 
+Multicollinearity indicates predictors that are correlated with other predictors.  This happens when a model includes more than one factor that is correlated not just to the target variable, but also to others. As a result, multicollinearity will increase the standard errors of the coefficients. The best ways to check which predictors are correlated with each other is with a heat map and the .corr( ) method. 
+
+![](student_files/student_53_0.png)
+
+During this step, one of the biggest predictors that most people would suggest directly explains variances in housing prices was removed from the dataset. This was achieved because our ***sqft_living*** predictor directly correlates with the greatest about of features within the dataset. Notice the column in the above .corr( ) method, *sqft_living* correlates with two other variables which include *sqft_above* and *sqft_living15*. These two variables correlate with each other because they both account for very similar values. 
+
+### Normalize
+
+The final step for Jumstart Realty in the data cleaning process is to normalize the data. Normalizing the data set suggesrs converting each numeric value to it's corresponding ***z-score*** for the column, which is obtained by subtracting the column's mean and then dividing by the column's standard deviation for every value. The formula for this will be the same used in the detecting outliers stage. 
+
+Throughout this stage, the data became processed and is now ready for exploration. The scrub and cleaning process included identifying and removing null values, converting datatypes, dealing with outliers, normalizing data, as well as checking for and removing correllated predictors. As we move forward, clean data ensures the dataset is in the best possible condition during exploration and especially for building an accurate model. 
+
+# Exploration
+
+Exploratory Data Analysis, or EDA, is an integral part of understanding the King County dataset. Before moving towards building models for King County, it's vital to become familiar with different realtionships within the data. Analyzing these relationships will provide intuition about how to interpret the results of the proceeding models. Asking questions about these relationships beforehand might also supply additional knowledge about relationships that we might have not known existed. This section will further investigate the distribution of data and ask specific questions about the housing market in King County. 
+
+### Build Density Plot
+
+
+![](student_files/student_64_0.png)
+
+
+
+![](student_files/student_64_1.png)
+
+
+
+![](student_files/student_64_2.png)
+
+
+
+![](student_files/student_64_3.png)
+
+
+
+![](student_files/student_64_4.png)
+
+
+
+![](student_files/student_64_5.png)
+
+
+
+![](student_files/student_64_6.png)
+
+
+
+![](student_files/student_64_7.png)
+
+
+
+![](student_files/student_64_8.png)
+
+
+In reviewing these histogram/KDE plots, it's clear to notice that there is positive skew in most of the data. This is resulting from an excess of housing prices and size in square feet of the houses/lot lying a few postive standard deviations from the mean. The peaks within these plots display where the values are concentrated over the interval. The peaks in price and square feet lie slightly below zero. 
+
+### Build Joint Plot
+
+
+![](student_files/student_67_0.png)
+
+
+
+![](student_files/student_67_1.png)
+
+
+
+![](student_files/student_67_2.png)
+
+
+
+![](student_files/student_67_3.png)
+
+
+
+![](student_files/student_67_4.png)
+
+
+
+![](student_files/student_67_5.png)
+
+
+
+![](student_files/student_67_6.png)
+
+
+
+![](student_files/student_67_7.png)
+
+
+
+![](student_files/student_67_8.png)
+
+
+
+![](student_files/student_67_9.png)
+
+
+
+![](student_files/student_67_10.png)
+
+
+With these join plots, we are checking for linearity assumption between predictors and target variable. In other words, the first scatter visualizations are given that can display the positive correlations between the *price* column and other columns in the dataframe. Specifically, it's clear to identify that *bathrooms*, *floors*, *sqft_above*, *sqft_basement*, *grade*, and *sqft_living15* have a positive correlation with housing prices. When building the model, it will be essential to consider inluding these predictors. 
+
+### Housing Prices by Zipcode:
+
+For the purpose of even futher understanding the dataset, it's meaningful to be curious. Asking questions is the first place to start. In this instance, I would like to find out where in King County housing prices will be the highest. 
+
+* **Task:** Predict where in King County housing prices will be the highest.
+
+
+* **Question:** *In which zipcode will produce the most expensive houses?*
+
+
+* **Prediction:** Puget Sound properties on the West side of downtown Seattle. 
+
+
+![](student_files/student_71_0.png)
+
+
+**Interpretation:** Using the SwarmPlot from the seaborn library, we are given the distribution of housing prices for each zipcode in King County. The results came back much differently than predicted. The top three zipcodes in which housing prices are the highest is 98004, 98040, and 98112. Here is some information about each of these zipcodes:
+
+* **98004**: 
+    * City = Bellevue, WA. 
+    * Population = 27,946. 
+    * Mean property value = 952,200. 
+    * Mean income per household = 117,321. 
+    * Median age = 39 years old. 
+    * Public school rating = 8/10.
+* **98040**:
+    * City = Mercer Island, WA.
+    * Population = 22,699.
+    * Mean property value = 864,000.
+    * Mean income per household = 126,359	
+    * Median age = 46 years old.
+    * Public school rating = 10/10.
+* **98112**:
+    * City = Seattle, WA
+    * Population = 21,077.
+    * Mean property value = 980,578.
+    * Mean income per household = 96,054.
+    * Median age = 39 years old.
+    * Public school rating = 7/10.
+
+It seems the previous predictions of housing prices in the Puget Sound were a bit off, however the zipcode of 98119 does carry high property values than average. Looking at the results, commonalities in the zipcodes that present the most expensive housing prices include the mean income per household and the school rating. Bellevue and Mercer Island both retain their own public school district, with high distinction. Seattle public schools are rated a bit lower, however still retain a 7/10 rating. 
+
+### Basement vs Housing Prices:
+
+In this next exploration let's look at our *basement* columns within the dataset. Some properties do not include a basement, others do. To answer the question provided below, we will be looking at both the *sqft_basement* column and the *basement* columns versus our *price* columns. 
+
+* **Task:** Predict if basements have an impact on housing prices.
+
+
+* **Question:** *Does having a basement increase the housing price in King County? If so, does basement size increase housing price?*
+
+
+* **Prediction:** Having a basement will increase housing price. 
+
+
+![](student_files/student_77_0.png)
+
+
+**Interpretation:** Violin plots identify probablity density of our data. The middle line is a kernel density estimation to show the distribution shape of the data. The wider sections of the violin plot represent a higher probability that datapoints will conform to that value, and more skinny portions represent a lower probability. The white dot in the middle represents the mean. In these results about housing prices relating to the inclusion of a bsaement, the prediction yields to be True. It's clear to tell the mean housing price is HIGHER when a basement is included in the property. It also appears that housing prices in the upper quartiles are more expensive when a basement is included. 
+
+Let's find out if the size of the basement will have a positive correlation with housing prices:
+
+![](student_files/student_79_1.png)
+
+
+With the above lmplot we are able to identify that when a house includes a larger basement in square footage, it will usually increase the value of the house. However there are a few outliers in the upper left portion of the graph, the orange line that strikes through the graph signifies a positive correlation with the inclusion of a basement. The given orange line is not a perfect line of best fit, but it respresents the flow of data. 
+
+### Year Built vs. Housing Price:
+
+For this next exploration let's look at our *yr_built* column within the dataset. When looking at the dataset, the oldest property built in King County is in 1900. The newest proprty built finished just recently in 2015. There is a spread of 115 years of property ages within this dataset.  To answer the question provided below, we will be looking at both the *yr_built* column and the *price* columns.
+
+* **Task:** Predict if year built has an impact on housing prices.
+
+
+* **Question:** *Are houses built more recently more valuable, in terms of price, compared to houses built more than half a century ago?*
+
+
+* **Prediction:** Houses completed more recently will be more expensive. 
+
+![](student_files/student_83_0.png)
+
+**Interpretation:** Using this wide-ranging violin plot to analyzing housing values in the 115 year span between 2015 and 1900, it's clear to notice houses built pre-1930 and post-1996 result in the highest average value. Houses built between 1942 and 1980 average the lowest value within the dataset. For Jumpstart Realty, driving the prices up for old AND new homes seems like the best plan of action as these homes pre-1930 and post-1996 have the highest market value. For the homes that lie in the middle of this 115 range, it's important for Jumpstart to understand these homes have the least value on the market. Initial predictions of 'houses completed more recently will be more expensive' was not entirely incorrect, as housing prices were higher in houses completed in the past two decades. But the prediciton failed to mention housing prices completed pre-1930, in which our visualization proved to be so. 
+
+### Housing Grade vs. Year Built & Price:
+
+With this exploration, let's analyze the *grade* column within the dataset. The grade of the house represents the construction quality of improvements. An average grade of construction and design is a 7 (grades range from 1-13), and is commonly seen in plats and older sub-divisions. To complete this analysis, the *grade* column will be compared with the year the house was completed and it's effect on price. 
+
+* **Task:** Predict if grade correlates to grade and housing prices.
+
+
+* **Question:** *Does the grade of the house correlated to the year it was built? What does that say about it's housing price?*
+
+
+* **Prediction:** Houses completed more recently will have a higher grade and price. 
+
+![](student_files/student_87_0.png)
+
+**Interpretation:** With this violin plot, there is visible distinction that newer houses provide a better housing grade. The mean of houses built before 1980 contain a grade rating of 7 or below. For the average house built after 1980, the grades range from 8-12. There is a clear relationship in which the year a house was built directly impacts it's rating from the King County residential department. Moving forward with this exploration, let's try to find out if grade impacts the housing price.
+
+![](student_files/student_89_0.png)
+
+The above line plot confirms the predictions that if a house if graded highly, it's price will become more valuable. Using grade in this instance will be a great feature to add into the model in the next phase. Within the exploration completed here, it's noteworthy to identify that newer houses result in a higher grade, which created a feedback loop driving the value of the house upwards. 
+
+### Renovations vs. Condition, Grade & Price:
+
+This final exploration will use the *renovation* column to determine if renovating a house will increase it's condition, grade, and price. The condtion of a house is relative to age and grade, coded 1-5. An average score of 3 indicates some evidence of deferred maintenance and normal obsolescence with age in that a few minor repairs are needed, along with some refinishing. All major components still functional and contributing toward an extended life expectancy. Effective age and utility is standard for like properties of its class and usage.
+The grade of the house represents the construction quality of improvements. An average grade of construction and design is a 7 (grades range from 1-13), and is commonly seen in plats and older sub-divisions. To complete this analysis, the *renovation* column will be compared with the condition of the house, grade of the house, and it's price. 
+
+* **Task:** Predict if renovations play a role in housing prices.
+
+
+* **Question:** *Can renovating a house increase not only it's condition and grade, but also it's value?*
+
+
+* **Prediction:** Renovations will positively impact all three predictors.
+
+![](student_files/student_94_0.png)
+
+**Interpretation:** Surprisingly, according to this visualization, if an owner has renovated the house it has a minimal impact on the overall condiiton for properties in King County. This might be due to the fact that a condition grade takes into effect the age of the house as one of its' metrics. Let's find out if this is also true for the *grade* of the house:
+
+![](student_files/student_96_0.png)
+
+Again, surprisingly, if an owner has renovated the house it has a minimal impact on the overall grade for property. However, there is a slightly larger margin in this visualization. Notice the white dot in these boolean columns is different. If a house has been renovated, the mean grade for the house is an 8. If a house hasn't been renovated, the mean grade for the house is an 7. There is something to be said about renovating a house. Finally, let's check if renovation has a correlation to price: 
+
+![](student_files/student_98_0.png)
+
+Here we see a distinct difference between renovating a house and not renovating a house when identifying its' value. Renovating a house results in a higher value of almost one standard deviation than not renovating a house. This is an important feature to account for when building the model. This was the final visual created during the exploration step. It's time to move forward with one of the most important pieces of Data Science, which is building a model. 
+
+### Waterfront:
+
+![](student_files/student_101_0.png)
+
+# Modeling
+
+Modeling is about prediction. In this model, we will be utilizing linear regression. In simple linear regression, there is a one-to-one relationship between the target variable and the predictor variable. However in multiple linear regression, there is a many-to-one relationship. Instead of using one input features, several are employed to identify the best relationship within your data. Furthermore, data models often use multiple iterations of linear regression to view the same data and ensure that all processes and correlations have been fulfilled to create a best-fit model. The mathematical equation for linear regression is as follows: 
+
+
+Revisiting the goal of this project, Jumpstart Realty wants to predict the future sale price of houses in King County as accurately as possible for the purpose of offering future buyers with high-caliber information to build trust between buyers and realtors. With the appropriate features within this dataset selected, Jumpstart will be able to build a future model to accurately estimate future values of properties. 
+
+
+### Simple Linear Regression
+
+To begin building an accurate model, let's start by building a linear regression that only takes one feature and pairs it with our target. In this case, *sqft_total* will become our feature to be paired with our housing *price*. This linear regression will established a relationship between the feature and the target using a best-fit line. We will attempt to draw a line that comes closest to the data by finding the slope and intercept. Also, to make further predictions, we will also be using an OLS summary to analyze our model, features, and residuals. 
+
+
+**Interpretation:** 
+* *Model Results:*
+    * R-Squared = 0.050 $\rightarrow$ Total square footage predicts 5% of the variance for price.
+    * F-Statistic = 1110. $\rightarrow$ Cannot confirm total square footage is signficant. 
+* *Features:*
+    * P-Value = 0 $\rightarrow$ Total square footage predicting price isn't random. 
+    * Coefficient = 0.0001 $\rightarrow$ Total square footage has little correlation with price. 
+        * $y = 0.0001*\text(sqft.total)$
+* *Residuals:*
+    * Skewness = 1.797 $\rightarrow$ Residuals are positively skewed.
+    * Kurtosis = 7.565 $\rightarrow$ Residuals do not fall within 3 standard deviations of mean.
+    * Jarque-Bera = 29428.026 $\rightarrow$ Data is not normal. 
+
+![](student_files/student_109_0.png)
+
+Using this simple linear regression model, we found that *sqft_total* predicts only 5% of the variance of our target *price*. The resulting F-statistic doesn't prove that the use of total square footage will predict the target. Our P-value indicates that this relationship isn't random, and the coefficient reveals little correlation. The data, given by our results, implies skewness and much of the data doen't fall within 3 standard deviations from the mean. Overall, using only this feature to predict future housing prices will not yield enough to build a satisfactory model. 
+
+### Multiple Linear Regression: Model 1
+
+Building an accurate model takes time, contemplation, and experimentation about which features should be included. Multiple regressions are based on the assumption that there is a linear relationship between both the target and the features. It also assumes no major correlation between the independent variables, which is why we checked for multicollinearity in the data scrubbing phase.
+
+
+**Interpretation:** 
+* *Model Results:*
+    * R-Squared = 0.570 $\rightarrow$ Selected features predicts 57% of the variance for price.
+    * F-Statistic = 2314. $\rightarrow$ Cannot confirm features are signficant. 
+* *Features:*
+    * P-Values = 0 $\rightarrow$ Features predicting price isn't random. 
+    * P-Values (sqft_lot) $\rightarrow$ Lot square footage predicting price is random
+    * Coefficients = 0.0001 $\rightarrow$ Most significant coefficients have a positive correlation with price. 
+* *Residuals:*
+    * Skewness = 1.197 $\rightarrow$ Residuals are positively skewed.
+    * Kurtosis = 6.994 $\rightarrow$ Residuals do not fall within 3 standard deviations of mean.
+    * Jarque-Bera = 18911 $\rightarrow$ Data is not normal. 
+
+![](student_files/student_115_0.png)
+
+
+Using this multiple linear regression model, we found that the selected features predict 57% of the variance of our target *price*. The resulting F-statistic doesn't prove that the use of the features will predict the target with total accuracy. The P-value indicates that most relationships aren't random (except for *sqft_lot)*, and the coefficient reveals positive correlation. The data, given by our results, implies skewness and much of the data doen't fall within 3 standard deviations from the mean. Overall, using these selected features yield a decent model for us to build upon. NOTICE: However, the condition number is large, 1.42e+07. This might indicate that there are strong multicollinearity or other numerical problems. This will be fixed in the next model.
+
+### Multiple Linear Regression: Model 2
+
+As said previously, building an accurate model takes time and experimentation. Multiple regressions are based on the assumption that there is a linear relationship between both the target and the features. It also assumes no major correlation between the independent variables, which is why we checked for multicollinearity in the data scrubbing phase. In the previous model, there was a factor that lead to significant multicollinearity. This will have to be fixed with model 2.
+
+
+**Interpretation:** 
+* *Model Results:*
+    * R-Squared = 0.561 $\rightarrow$ Selected features predicts 56.1% of the variance for price.
+    * F-Statistic = 3344. $\rightarrow$ Cannot confirm features are signficant. 
+* *Features:*
+    * P-Values = 0 $\rightarrow$ Features predicting price isn't random. 
+    * Coefficient = -2.73 $\rightarrow$ Most significant coefficients have a positive correlation with price. 
+    * Feature Coefficients > 0 $\rightarrow$ All coefficients have a positive correlation with price. 
+
+* *Residuals:*
+    * Skewness = 1.177 $\rightarrow$ Residuals are positively skewed.
+    * Kurtosis = 6.771 $\rightarrow$ Residuals do not fall within 3 standard deviations of mean.
+    * Jarque-Bera = 17235 $\rightarrow$ Data is not normal.
+
+
+![](student_files/student_125_0.png)
+
+
+This iteration of a multiple linear regression model finds that the selected features predict 56.1% of the variance of our target *price*. The resulting F-statistic doesn't prove that the use of the features will predict the target with total accuracy. The P-value indicates that all relationships aren't random and all feature coefficients reveal positive correlation. The data, given by our results, implies skewness and much of the data doen't fall within 3 standard deviations from the mean. Overall, using these selected features yields a valid model. The condition number is acceptable and inicates reasonable correlation. Additionally, a constant was added to the regression to aid the model in finding a best-fit line. 
+
+### Multiple Linear Regression: Model 3
+
+
+**Interpretation:** 
+* *Model Results:*
+    * R-Squared = 0.500 $\rightarrow$ Selected features predicts 50% of the variance for price.
+    * F-Statistic = 2620. $\rightarrow$ Cannot confirm features are signficant. 
+* *Features:*
+    * P-Values = 0 $\rightarrow$ Features predicting price isn't random. 
+    * Feature Coefficients >= 0 $\rightarrow$ Most coefficients have a positive correlation with price. 
+
+* *Residuals:*
+    * Skewness = 1.153 $\rightarrow$ Residuals are positively skewed.
+    * Kurtosis = 6.440 $\rightarrow$ Residuals do not fall within 3 standard deviations of mean.
+    * Jarque-Bera = 14952 $\rightarrow$ Data is not normal.
+
+
+![](student_files/student_130_0.png)
+
+
+This iteration of a multiple linear regression model finds that the selected features predict 50% of the variance of our target price. The resulting F-statistic doesn't prove that the use of the features will predict the target with total accuracy. The P-value indicates that all relationships aren't random and most feature coefficients reveal positive correlation. The data, given by our results, implies skewness and much of the data doen't fall within 3 standard deviations from the mean. Overall, using these selected features yields an averagly acceptable model. The condition number is acceptable and inicates reasonable correlation. In this iteration, the constant was removed and resulted in a worse R-squared score. 
+
+### Multiple Linear Regression: Model 4
+
+**Interpretation:** 
+* *Model Results:*
+    * R-Squared = 0.561 $\rightarrow$ Selected features predicts 56.1% of the variance for price.
+    * F-Statistic = 3344. $\rightarrow$ Cannot confirm features are signficant. 
+* *Features:*
+    * P-Values = 0 $\rightarrow$ Features predicting price isn't random. 
+    * Coefficient = -2.73 $\rightarrow$ Most significant coefficients have a positive correlation with price. 
+    * Feature Coefficients > 0 $\rightarrow$ All coefficients have a positive correlation with price. 
+
+* *Residuals:*
+    * Skewness = 1.177 $\rightarrow$ Residuals are positively skewed.
+    * Kurtosis = 6.771 $\rightarrow$ Residuals do not fall within 3 standard deviations of mean.
+    * Jarque-Bera = 17235 $\rightarrow$ Data is not normal.
+
+![](student_files/student_135_0.png)
+
+
+This iteration of a multiple linear regression model yields the same results as iteration 2. The selected features predict 56.1% of the variance of our target *price*. The resulting F-statistic doesn't prove that the use of the features will predict the target with total accuracy. The P-value indicates that all relationships aren't random and all feature coefficients reveal positive correlation. The data, given by our results, implies skewness and much of the data doen't fall within 3 standard deviations from the mean. Overall, using these selected features yields a valid **final** model. The condition number is acceptable and inicates reasonable correlation. A constant was added to the regression to aid the model in finding a best-fit line. 
+
+### Final Model
+
+The final model and its' parameters determine the linear regression, which will help predict the future housing prices for Jumpstart Realty. The coefficients in the equation and its' constant value embody the parameters. As stated before, building an accurate model takes time, contemplation, and experimentation. This model phase, inlucing the final model, has experimented with five models that identify proper features with little colliniarity. 
+
+
+**Interpretation:** 
+* *Model Results:*
+    * R-Squared = 0.555 $\rightarrow$ Selected features predicts 55.5% of the variance for price.
+    * F-Statistic = 3733. $\rightarrow$ Cannot confirm features are signficant. 
+* *Features:*
+    * P-Values = 0 $\rightarrow$ Features predicting price isn't random. 
+    * Coefficient = -2.83 $\rightarrow$ Most significant coefficients have a positive correlation with price.
+    * Feature Coefficients > 0 $\rightarrow$ All coefficients have a positive correlation with price. 
+
+* *Residuals:*
+    * Skewness = 1.202 $\rightarrow$ Residuals are positively skewed.
+    * Kurtosis = 6.784 $\rightarrow$ Residuals do not fall within 3 standard deviations of mean.
+    * Jarque-Bera = 17524 $\rightarrow$ Data is not normal.
+
+
+### Final Model Summary
+
+The final iteration of the multiple linear regression model yields the final model in which Jumpstart Realty will use to predict future housing prices. The selected features predict 55.5% of the variance of our target *price*. The resulting F-statistic doesn't prove that the use of the features will predict the target with total accuracy. The P-value indicates that all relationships aren't random and all feature coefficients reveal positive correlation. The data, given by our results, implies skewness and much of the data doen't fall within 3 standard deviations from the mean. Overall, using these selected features yields a valid **final** model. The condition number is acceptable and inicates reasonable correlation. A constant was added to the regression to aid the model in finding a best-fit line. 
+
+To begin validating the model, a train & test procedure was performed for the purpose of splitting the data into smaller sections and iterating through the model again. The test mean-squarred error resulted in a value of 0.447. The train mean-squarred error resulted in a value of 0.444. If the test error is substantially worse then our train error, this is a sign that our model doesn't generalize well to future cases. In this case, our Train MSE is right on par with the Test MSE. This is a good sign - it means the model will hold true with new data. This model also was satisfactory when splitting the data into differenct sections, using the cross validation results method in SKlearn. The test yielded values very similar to the test MSE.
+
+**Final Regression Equation**:
+
+y = $-2.83$ + $0.218(view)$ + $0.344(grade)$ + $0.231(sqftabove)$ + $0.106(sqftliving15)$ + 
+         $0.445(renovatedYN)$ + $0.388(basementYN)$ + $0.952(waterfrontYN)$
+
+
+![](student_files/student_162_0.png)
+
+
+### Recommendations
+
+To reiterate the usefulness of this business case, Jumpstart managers, along with senior agents and brokers, will use the resulting model to predict the housing market in King County. The scope of the project included housing data within King County, the economic health of buyers in the county, and the value of predictors that contribute to housing sales. The project will began on Monday May 13th, 2019 and was completed within a week, on Sunday May, 19th 2019. It's expected that all stateholders involved will conclude with the same understanding of the model and resulting datset. Jumpstart Realty looks to offer future buyers with high-caliber information to build trust between buyers and realtors.
+
+**List of Recommendations**: 
     
-#### Model Quality/Approach
+* *Increase View Count*: The more views a house receives, the higher average value the house will obtain. Use this to identify properties that will become 'hot' on the market and capitalize on this. When a property starts to receive for views, increase marketing efforts for that particular property. This could drive value even higher with more offers coming in. 
+    
+    
+* *Make Modern Renovations*: Housing grades are a reflection of design, features, and material quality. The better the grade, the higher value for the house. To improve upon a housing grade, encourage an owner to make renovations. As we have seen duirng the exploration phase, the more modern the features within the house, the higher the value.
 
-* Your model should not include any predictors with p-values greater than .05.  
-* Your notebook shows an iterative approach to modeling, and details the parameters and results of the model at each iteration.  
-    * **Level Up**: Whenever necessary, you briefly explain the changes made from one iteration to the next, and why you made these choices.  
-* You provide at least 1 paragraph explaining your final model.   
-* You pick at least 3 coefficients from your final model and explain their impact on the price of a house in this dataset.   
+    
+* *Increase Square Footage*: This goes without saying - more square footage means a higher value for the house. Our model shows that when square footage is larger, the higher the price. To add onto square footage, consider making renovations to the first floor that could add a porch or a sun room. 
 
 
-### 2. Non-Technical Presentation Must-Haves
+* *Neighbors Determine Value*: When the average square footage is higher in the closest 15 properties, the value of the house is increased. This is observable in the suburban zipcodes, such as Bellevue and Mercer Island. Agents and brokers should understand that when a property falls within the top three or five most valuable zipcodes, the higher the average square footage. Buyers with higher average incomes will be interested in these properties. It's also noteworthy that school ratings are also higher.
 
-The second deliverable should be a Keynote, PowerPoint or Google Slides presentation delivered as a pdf file in your fork of this repository with the file name of `presentation.pdf` detailing the results of your project.  Your target audience is non-technical people interested in using your findings to maximize their profit when selling their home. 
 
-Your presentation should:
+* *Add Basements to New Developments*: As empty lots become housing developments, make sure to recognize that a house with a basement with incur a higher value. And the more square footage the basement has, the higher the value. Current properties with a basement should be identifed and labeled with the potential for a higher price compared to the same property without a basement. 
 
-* Contain between 5 - 10 professional-quality slides.  
-    * **Level Up**: The slides should use visualizations whenever possible, and avoid walls of text. 
-* Take no more than 5 minutes to present.   
-* Avoid technical jargon and explain the results in a clear, actionable way for non-technical audiences.   
 
-**_Based on the results of your models, your presentation should discuss at least two concrete features that highly influence housing prices._**
+* *Waterfronts are Key*: When a property sits on the waterfront, it's value is extremely higher than the same property without a waterfront view. It's important to recognize this fact. It's value is almost 50% higher than properties without a waterfront view.
+    
 
-### 3. Blog Post
+### Conclusion
 
-Please also write a blog post about one element of the project - it could be the EDA, the feature selection, the choice of visualizations or anything else technical relating to the project. It should be between 800-1500 words and should be targeted at your peers - aspiring data scientists.
+This wraps up the King County dataset project. In this project, I analyzed the 'King County House Sales' dataset with the purpose of predicting the future sale price of houses in King County as accurately as possible. The project cleaned, explored, and modeled this dataset with a multivariate linear regression to accomplish the purpose. To best illustrate the results of the model, it will be presented from a viewpoint of a hypothetical local startup business, called 'Jumpstart Realty'. Jumpstart Realty looks to offer future buyers with high-caliber information to build trust between buyers and realtors. This project followed a methodology, called OSEMiN, to build a best-fit model. OSEMiN suggested to follow certain relational steps to help understand the data and build the model. The framework is now completed and recommendations have been given.
 
-## Submitting your Project
+### Futher Work
 
-You’re almost done! In order to submit your project for review, include the following links to your work in the corresponding fields on the right-hand side of Learn.
+If given more time and data, I would like to have known features about current owners of each property iD. Some examples could include the average income, age, children count, and if relatives live within the county. This could add indicators about which customers would fit into each property. Because this dataset given was from a snapshot in time in 2015, I would also like to analyze the ebbs & flows of property values over time. This could identify new trends in 'up & coming' areas of King County and also areas that are in decline. 
 
-1. **GitHub Repo:** Now that you’ve completed your project in Jupyter Notebooks, push your work to GitHub and paste that link to the right. (If you need help doing so, review the resources [here](https://docs.google.com/spreadsheets/d/1CNGDhjcQZDRx2sWByd2v-mgUOjy13Cd_hQYVXPuzEDE/edit#gid=0).)
-_Reminder: Make sure to also add and commit a pdf of your non-technical presentation to the repository with a file name of presentation.pdf._
-2. **Blog Post:** Include a link to your blog post.
-3. **Record Walkthrough:** Include a link to your video walkthrough.
-
-Hit "I'm done" to wrap it up. You will receive an email in order to schedule your review with your instructor.
-
-## Summary
-
-The end of module projects and project reviews are a critical part of the program. They give you a chance to both bring together all the skills you've learned into realistic projects and to practice key "business judgement" and communication skills that you otherwise might not get as much practice with.
-
-The projects are serious and important. They are not graded, but they can be passed and they can be failed. Take the project seriously, put the time in, ask for help from your peers or instructors early and often if you need it, and treat the review as a job interview and you'll do great. We're rooting for you to succeed and we're only going to ask you to take a review again if we believe that you need to. We'll also provide open and honest feedback so you can improve as quickly and efficiently as possible.
-
-Finally, this is your first project. We don't expect you to remember all of the terms or to get all of the answers right. If in doubt, be honest. If you don't know something, say so. If you can't remember it, just say so. It's very unusual for someone to complete a project review without being asked a question they're unsure of, we know you might be nervous which may affect your performance. Just be as honest, precise and focused as you can be, and you'll do great!
-
+Overall I'd like to thank the Jumpstart Realty team for the opportunity to work on this dataset and for the responsibility of presenting these findings.
